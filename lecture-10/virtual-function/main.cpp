@@ -1,62 +1,36 @@
 #include <iostream>
-#include <string>
-#include <vector>
-#include <memory> // For std::unique_ptr (C++11 이상)
-
 using namespace std;
 
-// 추상 클래스: Shape
-class Shape {
+class Base {
 public:
-  virtual ~Shape() {} // 소멸자를 가상으로 선언
-  virtual void draw() const = 0; // 순수 가상 함수 -> 추상 클래스
-
-  void printCenter() const {
-    // 도형을 화면 중앙에 그렸다고 가정하고, 그 상황에서 draw 호출
-    cout << "[INFO] Move shape to center.\n";
-    draw(); // 여기서 어떤 Shape를 가리키든 해당 파생 클래스의 draw()가 호출됨
+  // virtual 키워드를 제거하면 어떤 일이 일어나는지 비교할 수 있음
+   virtual void print() const {
+    cout << "Base::print() 호출\n";
   }
 };
 
-// 파생 클래스: Circle
-class Circle : public Shape {
+class Derived : public Base {
 public:
-  Circle(double r) : radius(r) {}
-
-  virtual void draw() const override {
-    cout << "Drawing a Circle with radius: " << radius << endl;
+  void print() const override {
+    cout << "Derived::print() 호출\n";
   }
-
-private:
-  double radius;
-};
-
-// 파생 클래스: Rectangle
-class Rectangle : public Shape {
-public:
-  Rectangle(double w, double h) : width(w), height(h) {}
-
-  virtual void draw() const override {
-    cout << "Drawing a Rectangle with width: " << width
-         << " and height: " << height << endl;
-  }
-
-private:
-  double width, height;
 };
 
 int main() {
-  // 다양한 도형을 Shape 포인터(또는 smart pointer)에 담아 관리
-  vector<unique_ptr<Shape>> shapes;
-  shapes.push_back(make_unique<Circle>(5.0));
-  shapes.push_back(make_unique<Rectangle>(10.0, 20.0));
-  shapes.push_back(make_unique<Circle>(2.5));
+  Base b;
+  Derived d;
 
-  // 순회하면서 각 도형을 그려봄
-  for (const auto& shapePtr : shapes) {
-    shapePtr->printCenter(); // 추상 클래스의 비가상 함수 안에서 가상 함수 draw() 호출
-    cout << endl;
-  }
+  // 기반 클래스 포인터로 객체를 가리킨다
+  Base* ptr = &b;
+  ptr->print(); // Base 객체를 가리키므로 당연히 Base::print() 호출
+
+  ptr = &d;
+  // 1) virtual을 사용했다면:
+  //    여기서 ptr은 Base* 타입이지만 실제로 Derived 객체를 가리키므로 Derived::print() 호출
+  // 2) virtual을 사용하지 않았다면:
+  //    Base의 정적 바인딩에 의해 Base::print()가 호출되어 다형성이 발휘되지 않음
+
+  ptr->print();
 
   return 0;
 }

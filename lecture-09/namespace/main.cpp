@@ -20,5 +20,7 @@ namespace { // unnamed namespaces - 로컬에서만 사용, 다른 파일에서 
 
 int main(){
   YonseiNamespace::sayYonsei(); // 함수 사용
+    count = 5;
+    cout << count << endl;
   return 0;
 }

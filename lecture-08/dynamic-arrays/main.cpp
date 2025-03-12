@@ -10,7 +10,7 @@ int main(){
     // a = pi1; // [불가능] 배열 포인터는 const라서 변경 불가
 
     // Dynamic Array
-    typedef double *DoublePtr;
+    typedef double* DoublePtr;
     DoublePtr d; // double 변수를 포인팅하는 포인터
     d = new double[10]; // double 변수를 포인팅 하는 포인터에 동적 크기(10개)의 배열을 할당
 
